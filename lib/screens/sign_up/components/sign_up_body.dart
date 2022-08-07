@@ -29,7 +29,7 @@ class SignUpBody extends StatelessWidget {
             child: Icon(Icons.arrow_back_ios, color: AppColors.greyColor)),
           centerTitle: true,
           title: const BodyText(
-              color: AppColors.purpleColor,
+              color: AppColors.blackColor,
               size: 16,
               text: 'Signup',
               weight: FontWeight.w600)),
@@ -40,7 +40,7 @@ class SignUpBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BodyText(
-                  color: AppColors.purpleColor,
+                  color: AppColors.blackColor,
                   size: 36,
                   text: title,
                   weight: FontWeight.w700),

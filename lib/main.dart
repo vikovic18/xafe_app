@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xafe/screens/login/login.dart';
 import 'package:xafe/screens/sign_up/components/sign_up_fields.dart';
 import 'package:xafe/screens/sign_up/sign_up.dart';
+import 'package:xafe/widgets/bottom_navigation_bar.dart';
 
 
 void main() {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(),
+      home: const CustomizedBottomNavigationBar(),
     );
   }
 }
