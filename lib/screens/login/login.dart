@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 size: 24,
                 text: "Welcome back",
                 weight: FontWeight.w600),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             const BodyText(
                 color: AppColors.darkGreyColor,
                 size: 14,
