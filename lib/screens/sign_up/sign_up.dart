@@ -11,7 +11,7 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: BodyText(
-          color: AppColors.purpleColor,
+          color: AppColors.blackColor,
           size: 15,
           text: 'Hello',
           weight: FontWeight.w600),

@@ -14,7 +14,6 @@ class _SignUpNameState extends State<SignUpName> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     nameController.dispose();
   }
@@ -46,7 +45,6 @@ class _SignUpEmailState extends State<SignUpEmail> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
   }
@@ -78,7 +76,6 @@ class _SignUpCodeState extends State<SignUpCode> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     codeController.dispose();
   }
@@ -110,7 +107,6 @@ class _SignupPasswordState extends State<SignupPassword> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     passwordController.dispose();
   }
