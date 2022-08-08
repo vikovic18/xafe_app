@@ -49,7 +49,7 @@ class BudgetDetailsBody extends StatelessWidget {
                                     children: [
                                       BodyText(
                                           color: AppColors.blackColor,
-                                          size: 20,
+                                          size: 16,
                                           text: 'Celery',
                                           weight: FontWeight.w400),
                                       BodyText(

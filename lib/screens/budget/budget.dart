@@ -8,6 +8,7 @@ class Budget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: AppColors.blueColor,
         body: SafeArea(
@@ -20,19 +21,19 @@ class Budget extends StatelessWidget {
                   children: const [
                     Icon(
                       Icons.laptop_windows_rounded,
-                      size: 30,
+                      size: 24,
                     ),
                     SizedBox(
                       width: 5,
                     ),
                     BodyText(
                         color: AppColors.whiteColor,
-                        size: 30,
+                        size: 24,
                         text: 'Budgets',
                         weight: FontWeight.w600)
                   ],
                 ),
-                SizedBox(height: 40,),
+                SizedBox(height: size.height*0.05),
                 Expanded(
                   child: GridView.builder(
                     itemCount: 5,

@@ -48,7 +48,7 @@ class BudgetDetails extends StatelessWidget {
                     GestureDetector(
                       onTap: () => _budgetEdit(context),
                       child: const CircleAvatar(
-                        radius: 30,
+                        radius: 24,
                         backgroundColor: AppColors.lightBlueColor,
                         child: Icon(
                           Icons.add,
