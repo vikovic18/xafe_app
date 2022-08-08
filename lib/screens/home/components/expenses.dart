@@ -37,12 +37,19 @@ class Expenses extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.food_bank),
-                                  BodyText(
-                                      color: AppColors.blackColor,
-                                      size: 18,
-                                      text: 'Bill Payments',
-                                      weight: FontWeight.w400)
+                                  const Icon(Icons.food_bank),
+                                  const SizedBox(width: 12),
+                                  SizedBox(
+                                    width: size.height*0.15,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: BodyText(
+                                          color: AppColors.blackColor,
+                                          size: 18,
+                                          text: 'Bill Payments',
+                                          weight: FontWeight.w500),
+                                    ),
+                                  )
                                 ],
                               ),
                               BodyText(
@@ -52,7 +59,7 @@ class Expenses extends StatelessWidget {
                                   weight: FontWeight.w400)
                             ],
                           ),
-                          SizedBox(height: size.height * 0.03)
+                          SizedBox(height: size.height * 0.05)
                         ],
                       ),
                     );

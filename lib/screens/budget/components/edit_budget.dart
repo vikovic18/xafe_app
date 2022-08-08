@@ -59,7 +59,7 @@ class _EditBudgetState extends State<EditBudget> {
               ReusableTextField(
                   controller: interval,
                   hintText: 'Monthly',
-                  suffix: Icon(Icons.arrow_downward_outlined)),
+                  suffix: Icon(Icons.arrow_downward_outlined, color: AppColors.blackColor,)),
               
              
             ],

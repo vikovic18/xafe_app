@@ -21,8 +21,8 @@ class ReusableTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      margin: EdgeInsets.only(right: 20),
-      padding: EdgeInsets.only(left: 20),
+      margin: const EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
           color: AppColors.textFieldColor,
           borderRadius: BorderRadius.circular(15),

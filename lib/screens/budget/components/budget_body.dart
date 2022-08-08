@@ -28,11 +28,17 @@ class BudgetBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BodyText(
-                  color: AppColors.darkGreyColor,
-                  size: 16,
-                  text: 'Groceries',
-                  weight: FontWeight.w400),
+              SizedBox(
+                width: size.height*0.15,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: BodyText(
+                      color: AppColors.darkGreyColor,
+                      size: 16,
+                      text: 'Groceries',
+                      weight: FontWeight.w400),
+                ),
+              ),
               BodyText(
                   color: AppColors.blackColor,
                   size: 20,
