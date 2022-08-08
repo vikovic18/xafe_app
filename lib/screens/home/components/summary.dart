@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xafe/screens/home/components/edit_sheet.dart';
+import 'package:xafe/screens/home/components/expense_edit_sheet.dart';
 import 'package:xafe/utils/colors.dart';
 import 'package:xafe/widgets/body_text.dart';
 

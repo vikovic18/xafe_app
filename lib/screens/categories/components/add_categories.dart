@@ -4,35 +4,32 @@ import 'package:xafe/widgets/body_text.dart';
 import 'package:xafe/widgets/button.dart';
 import 'package:xafe/widgets/reusable_textfield.dart';
 
-class AddExpenses extends StatefulWidget {
-  const AddExpenses({Key? key}) : super(key: key);
+class AddCategory extends StatefulWidget {
+  const AddCategory({Key? key}) : super(key: key);
 
   @override
-  State<AddExpenses> createState() => _AddExpensesState();
+  State<AddCategory> createState() => _AddCategoryState();
 }
 
-class _AddExpensesState extends State<AddExpenses> {
-  final TextEditingController amount = TextEditingController();
-  final TextEditingController category = TextEditingController();
+class _AddCategoryState extends State<AddCategory> {
   final TextEditingController name = TextEditingController();
-  final TextEditingController date = TextEditingController();
+  final TextEditingController emoji = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    amount.dispose();
-    category.dispose();
     name.dispose();
-    date.dispose();
+    emoji.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: AppColors.whiteColor,
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.only(top: 20, left: 20),
+          margin: const EdgeInsets.only(top: 20, left: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -49,28 +46,24 @@ class _AddExpensesState extends State<AddExpenses> {
               const BodyText(
                   color: AppColors.blackColor,
                   size: 24,
-                  text: 'Add an expense',
+                  text: 'Add a spending category',
                   weight: FontWeight.w400),
               SizedBox(
                 height: size.height * 0.04,
               ),
-              ReusableTextField(controller: amount, hintText: 'expense amount'),
+              ReusableTextField(controller: name, hintText: 'Enter category name'),
               const SizedBox(height: 10),
               ReusableTextField(
-                  controller: category,
-                  hintText: 'Select category',
-                  suffix: Icon(Icons.arrow_downward_outlined)),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: name, hintText: 'expense name'),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: date, hintText: 'date (dd/mm/yy')
+                  controller: emoji,
+                  hintText: 'Choose category emoji',
+                  suffix: const Icon(Icons.arrow_downward_outlined)),
             ],
           ),
         ),
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: () {}, text: 'Add Expense')),
+          child: ButtonText(onPressed: () {}, text: 'Create Category')),
     );
   }
 }
