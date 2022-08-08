@@ -4,26 +4,24 @@ import 'package:xafe/widgets/body_text.dart';
 import 'package:xafe/widgets/button.dart';
 import 'package:xafe/widgets/reusable_textfield.dart';
 
-class AddExpenses extends StatefulWidget {
-  const AddExpenses({Key? key}) : super(key: key);
+class AddBudget extends StatefulWidget {
+  const AddBudget({Key? key}) : super(key: key);
 
   @override
-  State<AddExpenses> createState() => _AddExpensesState();
+  State<AddBudget> createState() => _AddBudgetState();
 }
 
-class _AddExpensesState extends State<AddExpenses> {
+class _AddBudgetState extends State<AddBudget> {
   final TextEditingController amount = TextEditingController();
-  final TextEditingController category = TextEditingController();
+  final TextEditingController interval = TextEditingController();
   final TextEditingController name = TextEditingController();
-  final TextEditingController date = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
     amount.dispose();
-    category.dispose();
     name.dispose();
-    date.dispose();
+    interval.dispose();
   }
 
   @override
@@ -32,7 +30,7 @@ class _AddExpensesState extends State<AddExpenses> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.only(top: 20, left: 20),
+          margin: const EdgeInsets.only(top: 20, left: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -49,28 +47,27 @@ class _AddExpensesState extends State<AddExpenses> {
               const BodyText(
                   color: AppColors.blackColor,
                   size: 24,
-                  text: 'Add an expense',
+                  text: 'Create a budget',
                   weight: FontWeight.w400),
               SizedBox(
                 height: size.height * 0.04,
               ),
-              ReusableTextField(controller: amount, hintText: 'expense amount'),
+              ReusableTextField(controller: name, hintText: 'Budget name'),
+              const SizedBox(height: 10),
+              const SizedBox(height: 10),
+              ReusableTextField(controller: amount, hintText: 'Budget amount'),
               const SizedBox(height: 10),
               ReusableTextField(
-                  controller: category,
-                  hintText: 'Select category',
-                  suffix: Icon(Icons.arrow_downward_outlined)),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: name, hintText: 'expense name'),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: date, hintText: 'date (dd/mm/yy')
+                  controller: interval,
+                  hintText: 'Choose interval',
+                  suffix: const Icon(Icons.arrow_downward_outlined)),
             ],
           ),
         ),
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: () {}, text: 'Add Expense')),
+          child: ButtonText(onPressed: () {}, text: 'Create Budget')),
     );
   }
 }
