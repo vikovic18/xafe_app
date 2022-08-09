@@ -33,6 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -40,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         backgroundColor: AppColors.whiteColor,
         leading: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Icon(Icons.arrow_back_ios, color: AppColors.greyColor)),
+            child: const Icon(Icons.arrow_back_ios, color: AppColors.greyColor)),
       ),
       body: SafeArea(
           child: Container(
@@ -59,24 +60,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 size: 14,
                 text: 'Login to your account',
                 weight: FontWeight.w400),
-            SizedBox(height: 14),
+            const SizedBox(height: 14),
             ReusableTextField(
               controller: emailController,
               hintText: "email address",
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ReusableTextField(
                 controller: passwordController,
                 keyboardType: TextInputType.name,
                 hintText: 'password',
                 isObscure: true,
-                suffix: Icon(Icons.password)),
+                suffix: const Icon(Icons.password)),
             SizedBox(
-              height: 25,
+              height: size.height*0.03,
             ),
             Container(
-              margin: EdgeInsets.only(right: 20),
+              margin: const EdgeInsets.only(right: 20),
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: Align(
