@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
+import 'package:xafe/common_widgets/drop_down_button.dart';
+import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
+import 'package:xafe/features/categories/controller/category_controller.dart';
 import 'package:xafe/utils/colors.dart';
 
-
-class AddCategory extends StatefulWidget {
+class AddCategory extends ConsumerStatefulWidget {
   const AddCategory({Key? key}) : super(key: key);
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  _AddCategoryState createState() => _AddCategoryState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
-  final TextEditingController name = TextEditingController();
-  final TextEditingController emoji = TextEditingController();
+class _AddCategoryState extends ConsumerState<AddCategory> {
+  final TextEditingController nameController = TextEditingController();
+
+  String dropdownvalue = 'Choose Category emoji';
+
+  var items = [
+    'Choose Category emoji',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+  ];
 
   @override
   void dispose() {
     super.dispose();
-    name.dispose();
-    emoji.dispose();
+    nameController.dispose();
+  }
+
+  void addCategory(context) async {
+    String name = nameController.text.trim();
+
+    await ref
+        .read(categoryControllerProvider)
+        .addCategory(context, name, dropdownvalue);
   }
 
   @override
@@ -52,20 +71,27 @@ class _AddCategoryState extends State<AddCategory> {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              ReusableTextField(controller: name, hintText: 'Enter category name', keyboardType: TextInputType.name,),
-              const SizedBox(height: 10),
               ReusableTextField(
-                  controller: emoji,
-                  hintText: 'Choose category emoji',
-                  keyboardType: TextInputType.none,
-                  suffix: const Icon(Icons.arrow_downward_outlined)),
+                controller: nameController,
+                hintText: 'Enter category name',
+                keyboardType: TextInputType.name,
+              ),
+              const SizedBox(height: 10),
+              CustomizedDropDownButton(
+                  dropdownvalue: dropdownvalue, items: items)
+              // ReusableTextField(
+              //     controller: emoji,
+              //     hintText: 'Choose category emoji',
+              //     keyboardType: TextInputType.none,
+              //     suffix: const Icon(Icons.arrow_downward_outlined)),
             ],
           ),
         ),
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: () {}, text: 'Create Category')),
+          child: ButtonText(
+              onPressed: () => addCategory(context), text: 'Create Category')),
     );
   }
 }

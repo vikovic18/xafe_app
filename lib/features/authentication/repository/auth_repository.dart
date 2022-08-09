@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
-import 'package:xafe/features/authentication/screens/login/login.dart';
 import 'package:xafe/models/user.dart';
 import 'package:xafe/utils/snackbar.dart';
 
@@ -49,11 +48,9 @@ class AuthRepository {
       BuildContext context, String email, String password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
-      print('login successful');
       Navigator.pushNamedAndRemoveUntil(
           context, CustomizedBottomNavigationBar.routeName, (route) => false);
     } on FirebaseAuthException catch (e) {
-      print(e);
       showSnackBar(context: context, content: e.message!);
     }
   }

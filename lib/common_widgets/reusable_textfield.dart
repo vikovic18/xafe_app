@@ -21,8 +21,9 @@ class ReusableTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
-      height: 60,
+      height: size.height*0.08,
       margin: const EdgeInsets.only(right: 20),
       padding: const EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
@@ -34,6 +35,11 @@ class ReusableTextField extends StatelessWidget {
           keyboardType: keyboardType,
           controller: controller,
           decoration: InputDecoration(
+              hintStyle: const TextStyle(
+                fontFamily: 'Euclid',
+                fontSize: 14,
+                color: AppColors.blackColor
+              ),
               suffix: suffix,
               border: InputBorder.none,
               focusedBorder:
