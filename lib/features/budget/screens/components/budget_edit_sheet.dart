@@ -1,16 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
+import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/custom_divider.dart';
+import 'package:xafe/features/budget/controller/budget_controller.dart';
+import 'package:xafe/features/budget/screens/components/add_budget_expenses.dart';
 import 'package:xafe/features/budget/screens/components/edit_budget.dart';
-import 'package:xafe/features/home/screens/components/add_expenses.dart';
 import 'package:xafe/utils/colors.dart';
 
+class BudgetEditSheet extends ConsumerWidget {
+  const BudgetEditSheet(
+      {Key? key,
+      required this.id,
+      required this.name,
+      required this.amount,
+      required this.interval})
+      : super(key: key);
 
-class BudgetEditSheet extends StatelessWidget {
-  const BudgetEditSheet({Key? key}) : super(key: key);
+  final String id;
+  final String name;
+  final double amount;
+  final String interval;
+
+  void _deleteBudget(context, WidgetRef ref) async {
+    await ref
+        .read(budgetControllerProvider)
+        .deleteBudget(context, id)
+        .then((_) => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CustomizedBottomNavigationBar()),
+              )
+            });
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     return Container(
         height: size.height * 0.3795,
@@ -34,24 +60,30 @@ class BudgetEditSheet extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddExpenses()),
+                        builder: (context) => AddBudgetExpenses(
+                              budgetId: id,
+                            )),
                   );
                 }),
             EditOptions(
                 icon: Icons.paste_outlined,
                 title: 'Edit Budget',
                 onPressed: () {
-                    Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const EditBudget()),
+                        builder: (context) => EditBudget(
+                              id: id,
+                              name: name,
+                              amount: amount,
+                              interval: interval,
+                            )),
                   );
                 }),
             EditOptions(
                 icon: Icons.panorama_outlined,
                 title: 'Delete Budget',
-                onPressed: () {
-                })
+                onPressed: () => _deleteBudget(context, ref))
           ],
         ));
   }

@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
+import 'package:xafe/common_widgets/error.dart';
+import 'package:xafe/common_widgets/loader.dart';
+import 'package:xafe/features/budget/controller/budget_controller.dart';
+import 'package:xafe/features/home/controller/expenses_controller.dart';
 import 'package:xafe/features/home/screens/components/expense_edit_sheet.dart';
+import 'package:xafe/models/budget_expenses.dart';
+import 'package:xafe/models/expenses.dart';
 import 'package:xafe/utils/colors.dart';
 
-class Summary extends StatelessWidget {
-  const Summary({Key? key}) : super(key: key);
+class Summary extends ConsumerWidget {
+  Summary({Key? key}) : super(key: key);
 
-   void _edit(BuildContext ctx) {
+  // double sum = 0;
+
+  void _edit(BuildContext ctx) {
     showModalBottomSheet(
         elevation: 0,
         backgroundColor: AppColors.darkGreyColor,
@@ -17,8 +26,10 @@ class Summary extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
+    final allBudgetList = ref.watch(allTotalBudgetExpensesProvider);
+    final allExpensesList = ref.watch(allExpensesControllerProvider);
     print(size.height);
     return Container(
       padding: const EdgeInsets.only(top: 24, left: 20, right: 20),
@@ -52,13 +63,13 @@ class Summary extends StatelessWidget {
                     ])),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   _edit(context);
                 },
                 child: CircleAvatar(
                     radius: size.height * 0.04,
                     backgroundColor: AppColors.whiteColor,
-                    child: Icon(Icons.edit_outlined)),
+                    child: const Icon(Icons.edit_outlined)),
               )
             ],
           ),
@@ -75,15 +86,41 @@ class Summary extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const TextOptions(title: 'Expenses', amount: '\$4,750.00'),
-                  SizedBox(width: size.height * 0.07),
-                  const TextOptions(title: 'Income', amount: '\$9,500.00')
-                ],
-              ),
-              SizedBox(height: size.height*0.02)
+              allBudgetList.when(
+                  data: (allBudgetExpenses) {
+                    double sum = 0;
+                    for (var element in allBudgetExpenses) {
+                      double total = element.amount!;
+                      sum += total;
+                    }
+                    return allExpensesList.when(
+                        data: (allExpenses) {
+                          for (var element in allExpenses) {
+                            double total = element.amount!;
+                            sum += total;
+                          }
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextOptions(
+                                  title: 'Expenses',
+                                  amount: '\$${sum.toStringAsFixed(0)}'),
+                              SizedBox(width: size.height * 0.07),
+                              const TextOptions(
+                                  title: 'Income', amount: '\$9,500.00')
+                            ],
+                          );
+                        },
+                        error: (err, trace) {
+                          return ErrorScreen(error: err.toString());
+                        },
+                        loading: () => const Loader());
+                  },
+                  error: (err, trace) {
+                    return ErrorScreen(error: err.toString());
+                  },
+                  loading: () => const Loader()),
+              SizedBox(height: size.height * 0.02)
             ],
           )
         ],
@@ -118,9 +155,7 @@ class TextOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       BodyText(
           color: AppColors.whiteColor,
           size: 14,

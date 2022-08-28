@@ -1,28 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
+import 'package:xafe/features/budget/controller/budget_controller.dart';
 import 'package:xafe/utils/colors.dart';
 
-
-class AddBudget extends StatefulWidget {
+class AddBudget extends ConsumerStatefulWidget {
   const AddBudget({Key? key}) : super(key: key);
 
   @override
-  State<AddBudget> createState() => _AddBudgetState();
+  _AddBudgetState createState() => _AddBudgetState();
 }
 
-class _AddBudgetState extends State<AddBudget> {
-  final TextEditingController amount = TextEditingController();
-  final TextEditingController interval = TextEditingController();
-  final TextEditingController name = TextEditingController();
+class _AddBudgetState extends ConsumerState<AddBudget> {
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+
+  String dropdownvalue = 'Choose an interval';
+
+  var items = [
+    'Choose an interval',
+    'Day',
+    'Month',
+    'Year',
+  ];
+
+  void _addBudget(context) async {
+    String name = nameController.text.trim();
+    String amountText = amountController.text.trim();
+    String amount = amountText.replaceAll(",", "");
+    await ref
+        .read(budgetControllerProvider)
+        .addBudget(context, name, double.parse(amount), dropdownvalue);
+  }
 
   @override
   void dispose() {
     super.dispose();
-    amount.dispose();
-    name.dispose();
-    interval.dispose();
+    amountController.dispose();
+    nameController.dispose();
   }
 
   @override
@@ -53,23 +70,57 @@ class _AddBudgetState extends State<AddBudget> {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              ReusableTextField(controller: name, hintText: 'Budget name', keyboardType: TextInputType.name,),
+              ReusableTextField(
+                controller: nameController,
+                hintText: 'Budget name',
+                keyboardType: TextInputType.name,
+              ),
               const SizedBox(height: 10),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: amount, hintText: 'Budget amount', keyboardType: TextInputType.number,),
               const SizedBox(height: 10),
               ReusableTextField(
-                  keyboardType: TextInputType.none,
-                  controller: interval,
-                  hintText: 'Choose interval',
-                  suffix: const Icon(Icons.arrow_downward_outlined)),
+                controller: amountController,
+                hintText: 'Budget amount',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height: size.height * 0.08,
+                margin: const EdgeInsets.only(right: 20),
+                padding: const EdgeInsets.only(left: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: AppColors.textFieldColor,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: AppColors.greyColor)),
+                child: DropdownButton(
+                    style: const TextStyle(
+                        fontFamily: 'Euclid',
+                        fontSize: 14,
+                        color: AppColors.blackColor),
+                    value: dropdownvalue,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                    ),
+                    items: items.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownvalue = newValue!;
+                      });
+                    }),
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: () {}, text: 'Create Budget')),
+          child: ButtonText(
+              onPressed: () => _addBudget(context), text: 'Create Budget')),
     );
   }
 }

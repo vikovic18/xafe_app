@@ -6,19 +6,21 @@ import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
+import 'package:xafe/features/budget/controller/budget_controller.dart';
 import 'package:xafe/features/categories/controller/category_controller.dart';
-import 'package:xafe/features/home/controller/expenses_controller.dart';
 import 'package:xafe/models/category.dart';
 import 'package:xafe/utils/colors.dart';
 
-class AddExpenses extends ConsumerStatefulWidget {
-  const AddExpenses({Key? key}) : super(key: key);
+class AddBudgetExpenses extends ConsumerStatefulWidget {
+  const AddBudgetExpenses({Key? key, required this.budgetId}) : super(key: key);
+
+  final String budgetId;
 
   @override
-  _AddExpensesState createState() => _AddExpensesState();
+  _AddBudgetExpensesState createState() => _AddBudgetExpensesState();
 }
 
-class _AddExpensesState extends ConsumerState<AddExpenses> {
+class _AddBudgetExpensesState extends ConsumerState<AddBudgetExpenses> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
@@ -42,7 +44,7 @@ class _AddExpensesState extends ConsumerState<AddExpenses> {
   //   return await ref.read(categoryControllerProvider).getAllCategories();
   // }
 
-  void addExpenses(context) async {
+  void addBudgetExpenses(context) async {
     String name = nameController.text.trim();
     String amount = amountController.text.trim();
     String dateTime = dateController.text.trim();
@@ -56,8 +58,8 @@ class _AddExpensesState extends ConsumerState<AddExpenses> {
         categoryId = element.documentId;
       }
     }
-    await ref.read(expensesControllerProvider).addExpenses(
-        context, name, double.parse(amount), categoryId!, newDateTime);
+    await ref.read(budgetControllerProvider).addBudgetExpenses(context, name,
+        double.parse(amount), categoryId!, widget.budgetId, newDateTime);
   }
 
   @override
@@ -91,7 +93,6 @@ class _AddExpensesState extends ConsumerState<AddExpenses> {
               ),
               SingleChildScrollView(
                 child: Column(children: [
-                  const SizedBox(height: 10),
                   Container(
                     height: size.height * 0.08,
                     margin: const EdgeInsets.only(right: 20),
@@ -176,7 +177,8 @@ class _AddExpensesState extends ConsumerState<AddExpenses> {
       bottomNavigationBar: Container(
           margin: const EdgeInsets.only(left: 20, right: 20),
           child: ButtonText(
-              onPressed: () => addExpenses(context), text: 'Add Expense')),
+              onPressed: () => addBudgetExpenses(context),
+              text: 'Add Expense')),
     );
   }
 }

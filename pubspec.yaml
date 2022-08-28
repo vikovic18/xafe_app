@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^3.4.3
   firebase_storage: ^10.3.4
   flutter_riverpod: ^1.0.3
+  intl: ^0.17.0
  
 
 dev_dependencies:

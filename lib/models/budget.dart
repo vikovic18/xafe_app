@@ -1,40 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: empty_constructor_bodies
-class CategoryModel {
+class BudgetModel {
   String? documentId;
   String? name;
-  String? emoji;
+  double? amount;
   String? uid;
-  DateTime? dateTime;
+  String? interval; 
 
-  CategoryModel(
+  BudgetModel(
       {required this.documentId,
       required this.name,
-      required this.emoji,
+      required this.amount,
       required this.uid,
-      required this.dateTime
+      required this.interval
       });
 
   Map<String, dynamic> toJson() => {
         "name": name,
-        "emoji": emoji,
+        "emoji": amount,
         "uid": uid,
-        "dateTime": dateTime
+        "interval": interval
       };
 
-  // CategoryModel.fromJson(Map<String, dynamic> json) {
-  //   id = json['id'];
-  //   name = json['name'];
-  //   emoji = json['emoji'];
-  //   uid = json['uid'];
-  // }
 
-  CategoryModel.fromSnapshot(
+  BudgetModel.fromSnapshot(
       QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : documentId = snapshot.id,
         uid = snapshot.data()['uid'],
         name = snapshot.data()['name'],
-        emoji = snapshot.data()['emoji'],
-        dateTime = (snapshot.data()['dateTime'] as Timestamp).toDate();
+        amount = snapshot.data()['amount'],
+        interval = snapshot.data()['interval'];
 }

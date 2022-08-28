@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
+
 import 'package:xafe/features/authentication/controllers/auth_controller.dart';
 import 'package:xafe/features/authentication/screens/sign_up/components/sign_up_body.dart';
-import 'package:xafe/features/authentication/screens/sign_up/sign_up.dart';
+
 import 'package:xafe/utils/snackbar.dart';
 
 //SignUpName
