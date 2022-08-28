@@ -3,6 +3,7 @@ import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/error.dart';
 import 'package:xafe/features/authentication/screens/login/login.dart';
 import 'package:xafe/features/authentication/screens/sign_up/components/sign_up_fields.dart';
+import 'package:xafe/features/budget/screens/components/budget_details.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -24,6 +25,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case CustomizedBottomNavigationBar.routeName:
       return MaterialPageRoute(
           builder: (context) => const CustomizedBottomNavigationBar());
+    case BudgetDetails.routeName:
+      final args = settings.arguments as Map<String, dynamic>;
+      final name = args['name'];
+      final id = args['id'];
+      final amount = args['amount'];
+      final interval = args['interval'];
+      // final totalPct = args['totalPct'];
+      // final sum = args['sum'];
+      return MaterialPageRoute(
+          builder: (context) => BudgetDetails(name: name, id: id, amount: amount, interval: interval));
     default:
       return MaterialPageRoute(
           builder: ((context) => const Scaffold(

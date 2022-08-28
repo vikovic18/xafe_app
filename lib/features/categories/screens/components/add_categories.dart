@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
-import 'package:xafe/common_widgets/drop_down_button.dart';
-import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
 import 'package:xafe/features/categories/controller/category_controller.dart';
 import 'package:xafe/utils/colors.dart';
@@ -36,10 +34,9 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
 
   void addCategory(context) async {
     String name = nameController.text.trim();
-
     await ref
         .read(categoryControllerProvider)
-        .addCategory(context, name, dropdownvalue);
+        .addCategory(context, name, dropdownvalue, DateTime.now());
   }
 
   @override
@@ -77,13 +74,36 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
                 keyboardType: TextInputType.name,
               ),
               const SizedBox(height: 10),
-              CustomizedDropDownButton(
-                  dropdownvalue: dropdownvalue, items: items)
-              // ReusableTextField(
-              //     controller: emoji,
-              //     hintText: 'Choose category emoji',
-              //     keyboardType: TextInputType.none,
-              //     suffix: const Icon(Icons.arrow_downward_outlined)),
+              Container(
+                height: size.height * 0.08,
+                margin: const EdgeInsets.only(right: 20),
+                padding: const EdgeInsets.only(left: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: AppColors.textFieldColor,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: AppColors.greyColor)),
+                child: DropdownButton(
+                    style: const TextStyle(
+                        fontFamily: 'Euclid',
+                        fontSize: 14,
+                        color: AppColors.blackColor),
+                    value: dropdownvalue,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                    ),
+                    items: items.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownvalue = newValue!;
+                      });
+                    }),
+              ),
             ],
           ),
         ),

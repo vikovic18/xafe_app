@@ -1,28 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
+import 'package:xafe/features/budget/controller/budget_controller.dart';
 import 'package:xafe/utils/colors.dart';
 
+class EditBudget extends ConsumerStatefulWidget {
+  const EditBudget(
+      {Key? key,
+      required this.id,
+      required this.name,
+      required this.amount,
+      required this.interval})
+      : super(key: key);
 
-class EditBudget extends StatefulWidget {
-  const EditBudget({Key? key}) : super(key: key);
+  final String id;
+  final String name;
+  final double amount;
+  final String interval;
 
   @override
-  State<EditBudget> createState() => _EditBudgetState();
+  _EditBudgetState createState() => _EditBudgetState();
 }
 
-class _EditBudgetState extends State<EditBudget> {
-  final TextEditingController amount = TextEditingController();
+class _EditBudgetState extends ConsumerState<EditBudget> {
+  final TextEditingController amountController = TextEditingController();
   final TextEditingController interval = TextEditingController();
-  final TextEditingController name = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+
+  String dropdownvalue = '';
+
+  var items = [
+    'Day',
+    'Month',
+    'Year',
+  ];
 
   @override
   void dispose() {
     super.dispose();
-    amount.dispose();
-    name.dispose();
+    amountController.dispose();
+    nameController.dispose();
     interval.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.name;
+    amountController.text = widget.amount.toStringAsFixed(0);
+  }
+
+  void _editBudget(context) async {
+    String name = nameController.text.trim();
+    String amount = amountController.text.trim();
+    String budgetInterval =
+        dropdownvalue == '' ? widget.interval : dropdownvalue;
+    await ref
+        .read(budgetControllerProvider)
+        .editBudget(context, widget.id, name, double.parse(amount), budgetInterval);
   }
 
   @override
@@ -31,7 +68,7 @@ class _EditBudgetState extends State<EditBudget> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.only(top: 20, left: 20),
+          margin: const EdgeInsets.only(top: 20, left: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -53,24 +90,56 @@ class _EditBudgetState extends State<EditBudget> {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              ReusableTextField(controller: name, hintText: '', keyboardType: TextInputType.none,),
-              const SizedBox(height: 10),
-              ReusableTextField(controller: amount, hintText: '', keyboardType: TextInputType.number,),
+              ReusableTextField(
+                controller: nameController,
+                hintText: '',
+                keyboardType: TextInputType.name,
+              ),
               const SizedBox(height: 10),
               ReusableTextField(
-                  keyboardType: TextInputType.none,
-                  controller: interval,
-                  hintText: 'Monthly',
-                  suffix: Icon(Icons.arrow_downward_outlined, color: AppColors.blackColor,)),
-              
-             
+                controller: amountController,
+                hintText: '',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height: size.height * 0.08,
+                margin: const EdgeInsets.only(right: 20),
+                padding: const EdgeInsets.only(left: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: AppColors.textFieldColor,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: AppColors.greyColor)),
+                child: DropdownButton(
+                    style: const TextStyle(
+                        fontFamily: 'Euclid',
+                        fontSize: 14,
+                        color: AppColors.blackColor),
+                    value:
+                        dropdownvalue == '' ? widget.interval : dropdownvalue,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                    ),
+                    items: items.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownvalue = newValue!;
+                      });
+                    }),
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: () {}, text: 'Create Budget')),
+          child: ButtonText(onPressed: () => _editBudget(context), text: 'Create Budget')),
     );
   }
 }

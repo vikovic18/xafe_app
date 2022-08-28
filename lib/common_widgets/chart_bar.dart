@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ChartBar extends StatelessWidget {
-  const ChartBar({Key? key}) : super(key: key);
+  const ChartBar({Key? key, required this.totalPercent, required this.baseColor, required this.overflowColor}) : super(key: key);
+
+  final double totalPercent;
+  final Color baseColor;
+  final Color overflowColor;
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +17,15 @@ class ChartBar extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: baseColor,
                   borderRadius: BorderRadius.circular(10)
                       ),
             ),
             FractionallySizedBox(
-              widthFactor: 0.4,
+              widthFactor: totalPercent,
               child: Container(
                 decoration:  BoxDecoration(
-                    color: Colors.yellow,
+                    color: overflowColor,
                     borderRadius: BorderRadius.circular(10)
                         ),
               ),

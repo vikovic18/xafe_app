@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             Summary(),
-            Expenses()
+            const Expenses()
           ],
         )
       ),
