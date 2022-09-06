@@ -3,24 +3,86 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/custom_divider.dart';
+import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/features/categories/controller/category_controller.dart';
 import 'package:xafe/models/category.dart';
+import 'package:xafe/models/emoji.dart';
 import 'package:xafe/utils/colors.dart';
+import 'package:xafe/utils/delete_error_alert.dart';
+import 'package:xafe/utils/snackbar.dart';
 
-class CategoriesBody extends ConsumerWidget {
+class CategoriesBody extends ConsumerStatefulWidget {
   const CategoriesBody({Key? key, required this.categories}) : super(key: key);
 
   final Iterable<CategoryModel> categories;
 
-  void deleteCategory(context, documentId, WidgetRef ref) async {
-    await ref
-        .read(categoryControllerProvider)
-        .deleteCategory(context, documentId);
+  @override
+  _CategoriesBodyState createState() => _CategoriesBodyState();
+}
+
+class _CategoriesBodyState extends ConsumerState<CategoriesBody> {
+  bool _isLoading = false;
+  void _loading() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
+  //   List<EmojiModel> emojis = [
+  //   EmojiModel(emoji: 'house', icon: Icon(Icons.house, color: Colors.blue,),),
+  //   EmojiModel(emoji: 'transportation', icon: Icon(Icons.emoji_transportation, color: Colors.green)),
+  //   EmojiModel(emoji: 'food', icon: Icon(Icons.restaurant, color: Colors.pink)),
+  //   EmojiModel(emoji: 'medical', icon: Icon(Icons.medical_services_rounded, color: Colors.orange)),
+  //   EmojiModel(emoji: 'money', icon: Icon(Icons.monetization_on_rounded, color: Colors.indigo)),
+  // ];
+
+  Icon? emojiIcon;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   for(var element in emojis){
+
+  //   }
+  // }
+
+  void _deleteCategory(context, documentId, WidgetRef ref) async {
+    final result = await showCustomDeleteDialog(context);
+    
+    if (result == true) {
+      _loading();
+      await ref
+          .read(categoryControllerProvider)
+          .deleteCategory(documentId)
+          .then((status) => {
+                if (status.isSuccess)
+                  {
+                    showSnackBar(
+                        context: context, content: 'Deleted successfully')
+                  }
+              })
+          .catchError((error) {
+        showSnackBar(context: context, content: error.toString());
+        _loading();
+      });
+      _loading();
+    }
+    // await ref
+    //     .read(categoryControllerProvider)
+    //     .deleteCategory(documentId)
+    //     .then((status) => {
+    //           if (status.isSuccess)
+    //             {showSnackBar(context: context, content: 'Deleted successfully')}
+    //         })
+    //     .catchError((error) {
+    //   showSnackBar(context: context, content: error.toString());
+    // });
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    List<EmojiModel> emojis = ref.watch(categoryControllerProvider).emojis;
     return Expanded(
         child: Container(
             width: double.infinity,
@@ -39,14 +101,19 @@ class CategoriesBody extends ConsumerWidget {
               BodyText(
                   color: AppColors.blackColor,
                   size: 16,
-                  text: '${categories.length} Spending Categories',
+                  text: '${widget.categories.length} Spending Categories',
                   weight: FontWeight.w400),
               SizedBox(height: size.height * 0.03),
               Expanded(
                 child: ListView.builder(
-                    itemCount: categories.length,
+                    itemCount: widget.categories.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final category = categories.elementAt(index);
+                      final category = widget.categories.elementAt(index);
+                      for(var element in emojis){
+                        if (category.emoji == element.emoji){
+                          emojiIcon = element.icon;
+                        }
+                      }
                       return Column(
                         children: [
                           Row(
@@ -54,7 +121,7 @@ class CategoriesBody extends ConsumerWidget {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.food_bank),
+                                  emojiIcon!,
                                   const SizedBox(width: 12),
                                   Column(
                                     crossAxisAlignment:
@@ -89,16 +156,17 @@ class CategoriesBody extends ConsumerWidget {
                                     color: AppColors.lightRedColor,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: GestureDetector(
-                                  onTap: () => deleteCategory(
-                                      context, category.documentId, ref),
-                                  child: const Center(
-                                    child: BodyText(
-                                        color: AppColors.yellowColor,
-                                        size: 16,
-                                        text: 'remove',
-                                        weight: FontWeight.w400),
-                                  ),
-                                ),
+                                    onTap: () => _deleteCategory(
+                                        context, category.documentId, ref),
+                                    child: !_isLoading
+                                        ? const Center(
+                                            child: BodyText(
+                                                color: AppColors.yellowColor,
+                                                size: 16,
+                                                text: 'remove',
+                                                weight: FontWeight.w400),
+                                          )
+                                        : const Loader()),
                               )
                             ],
                           ),

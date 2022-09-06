@@ -30,7 +30,9 @@ class MyApp extends ConsumerWidget {
           primarySwatch: Colors.blue,
         ),
         onGenerateRoute: (settings) => generateRoute(settings),
-        home: ref.watch(userDataAuthProvider).when(
+        home: 
+        // SignUpName()
+        ref.watch(userDataAuthProvider).when(
             data: (user) {
               if (user == null) {
                 return const SplashScreen();
@@ -40,7 +42,8 @@ class MyApp extends ConsumerWidget {
             error: (err, trace) {
               return ErrorScreen(error: err.toString());
             },
-            loading: () => const Loader()));
+            loading: () => const Loader())
+            );
   }
 }
 

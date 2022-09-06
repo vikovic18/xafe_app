@@ -50,7 +50,7 @@ class _BudgetDetailsState extends ConsumerState<BudgetDetails> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final budgetList = ref.watch(budgetExpensesProvider(widget.id));
-
+   
     return Scaffold(
         backgroundColor: AppColors.blueColor,
         body: SafeArea(

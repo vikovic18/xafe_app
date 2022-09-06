@@ -7,6 +7,7 @@ class ExpensesModel {
   double? amount;
   String? category;
   DateTime? dateTime;
+  String? categoryEmoji;
 
   ExpensesModel(
       {required this.documentId,
@@ -14,7 +15,8 @@ class ExpensesModel {
       required this.amount,
       required this.uid,
       required this.dateTime,
-      required this.category
+      required this.category,
+      required this.categoryEmoji
       });
 
   
@@ -26,6 +28,7 @@ class ExpensesModel {
         name = snapshot.data()['name'],
         amount = snapshot.data()['amount'],
         category = snapshot.data()['category'],
+        categoryEmoji = snapshot.data()['categoryEmoji'],
         dateTime = (snapshot.data()['dateTime'] as Timestamp).toDate();
 
 }

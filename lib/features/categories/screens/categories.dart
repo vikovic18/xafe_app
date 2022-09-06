@@ -69,7 +69,7 @@ class Categories extends ConsumerWidget {
           SizedBox(height: size.height * 0.02),
           StreamBuilder(
               stream:
-                  ref.read(categoryControllerProvider).allCategories(context),
+                  ref.read(categoryControllerProvider).allCategories(),
               builder: ((context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Loader();
