@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/features/categories/repository/category_repository.dart';
 import 'package:xafe/models/category.dart';
-import 'package:xafe/utils/snackbar.dart';
+import 'package:xafe/models/emoji.dart';
+import 'package:xafe/models/response_model.dart';
 
 final categoryControllerProvider = Provider((ref) {
   final categoryRepository = ref.watch(categoryRepositoryProvider);
   return CategoryController(categoryRepository: categoryRepository);
+});
+
+final allCategoriesProvider = StreamProvider((ref) {
+  final categoryController = ref.watch(categoryControllerProvider);
+  return categoryController.allCategories();
 });
 
 class CategoryController {
@@ -14,40 +20,57 @@ class CategoryController {
 
   CategoryController({required this.categoryRepository});
 
-  Future<void> addCategory(BuildContext context, String name, String emoji,
-      DateTime dateTime) async {
-    categoryRepository.addCategory(name, emoji, dateTime).then(((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Added successfully');
-      }
-    })).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
+  List<EmojiModel> emojis = [
+    EmojiModel(
+      emoji: 'house',
+      icon: const Icon(
+        Icons.house,
+        color: Colors.blue,
+      ),
+    ),
+    EmojiModel(
+        emoji: 'transportation',
+        icon: const Icon(Icons.emoji_transportation, color: Colors.green)),
+    EmojiModel(
+        emoji: 'food', icon: const Icon(Icons.restaurant, color: Colors.orange)),
+    EmojiModel(
+        emoji: 'medical',
+        icon: const Icon(Icons.medical_services_rounded, color: Colors.pink)),
+    EmojiModel(
+        emoji: 'money',
+        icon: const Icon(Icons.monetization_on_rounded, color: Colors.indigo)),
+  ];
+
+  Future<ResponseModel> addCategory(
+      String name, String emoji, DateTime dateTime) async {
+    late ResponseModel responseModel;
+    try {
+      await categoryRepository.addCategory(name, emoji, dateTime);
+      responseModel = ResponseModel(true, 'Added Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
   }
 
-  Future<void> deleteCategory(BuildContext context, documentId) async {
-    categoryRepository.deleteCategory(documentId: documentId).then((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Removed successfully');
-      }
-    }).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
+  Future<ResponseModel> deleteCategory(documentId) async {
+    late ResponseModel responseModel;
+    try {
+      await categoryRepository.deleteCategory(documentId: documentId);
+      responseModel = ResponseModel(true, 'Deleted Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
   }
 
-  Stream<Iterable<CategoryModel>> allCategories(BuildContext context) {
+  Stream<Iterable<CategoryModel>> allCategories() {
     return categoryRepository.allCategeries();
   }
 
   Future<List<CategoryModel>> getAllCategories() {
     return categoryRepository.getAllCategories();
   }
-
-  //  authController.registration(signUpBody).then((status) {
-  //         if (status.isSuccess) {
-  //           Get.off(() => const HomePage());
-  //         } else {
-  //           showCustomSnackbar(status.message);
-  //         }
-
 }

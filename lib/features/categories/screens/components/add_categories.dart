@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/button.dart';
+import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
 import 'package:xafe/features/categories/controller/category_controller.dart';
+import 'package:xafe/models/emoji.dart';
 import 'package:xafe/utils/colors.dart';
+import 'package:xafe/utils/snackbar.dart';
 
 class AddCategory extends ConsumerStatefulWidget {
   const AddCategory({Key? key}) : super(key: key);
@@ -16,15 +19,39 @@ class AddCategory extends ConsumerStatefulWidget {
 class _AddCategoryState extends ConsumerState<AddCategory> {
   final TextEditingController nameController = TextEditingController();
 
-  String dropdownvalue = 'Choose Category emoji';
+  bool _isLoading = false;
+  void _loading() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
 
-  var items = [
-    'Choose Category emoji',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
+  String? dropdownvalue;
+
+  // var items = [
+  //   'Item 2',
+  //   'Item 3',
+  //   'Item 4',
+  //   'Item 5',
+  // ];
+
+  // var icons = [
+  //   'Icons.house',
+  //   'Icons.emoji_transportation',
+  //   'Icons.restaurant',
+  //   'Icons.medical_services_rounded',
+  //   'Icons.monetization_on_rounded' 
+  // ];
+
+  // List<EmojiModel> emojis = [
+  //   EmojiModel(emoji: 'house', icon: Icon(Icons.house, color: Colors.blue,),),
+  //   EmojiModel(emoji: 'transportation', icon: Icon(Icons.emoji_transportation, color: Colors.green)),
+  //   EmojiModel(emoji: 'food', icon: Icon(Icons.restaurant, color: Colors.pink)),
+  //   EmojiModel(emoji: 'medical', icon: Icon(Icons.medical_services_rounded, color: Colors.orange)),
+  //   EmojiModel(emoji: 'money', icon: Icon(Icons.monetization_on_rounded, color: Colors.indigo)),
+  // ];
+
+ 
 
   @override
   void dispose() {
@@ -32,20 +59,31 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
     nameController.dispose();
   }
 
-  void addCategory(context) async {
+  void _addCategory() async {
     String name = nameController.text.trim();
+    _loading();
     await ref
         .read(categoryControllerProvider)
-        .addCategory(context, name, dropdownvalue, DateTime.now());
+        .addCategory(name, dropdownvalue!, DateTime.now())
+        .then((status) => {
+              if (status.isSuccess)
+                {showSnackBar(context: context, content: 'Added successfully')}
+            })
+        .catchError((error) {
+      showSnackBar(context: context, content: error.toString());
+    });
+    _loading();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    List<EmojiModel> emojis = ref.watch(categoryControllerProvider).emojis;
+    ref.listen(categoryControllerProvider, ((previous, next) {}));
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: SafeArea(
-        child: Container(
+        child: !_isLoading ? Container(
           margin: const EdgeInsets.only(top: 20, left: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,6 +122,12 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: AppColors.greyColor)),
                 child: DropdownButton(
+                    hint: const BodyText(
+                      color: AppColors.blackColor,
+                      size: 14,
+                      weight: FontWeight.w400,
+                      text: 'choose category emoji',
+                    ),
                     style: const TextStyle(
                         fontFamily: 'Euclid',
                         fontSize: 14,
@@ -92,10 +136,10 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
                     icon: const Icon(
                       Icons.keyboard_arrow_down,
                     ),
-                    items: items.map((String value) {
+                    items: emojis.map((EmojiModel value) {
                       return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
+                        value: value.emoji,
+                        child: value.icon,
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
@@ -106,12 +150,11 @@ class _AddCategoryState extends ConsumerState<AddCategory> {
               ),
             ],
           ),
-        ),
+        ): const Loader()
       ),
-      floatingActionButton: Container(
+      floatingActionButton: !_isLoading ? Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(
-              onPressed: () => addCategory(context), text: 'Create Category')),
+          child: ButtonText(onPressed: _addCategory, text: 'Create Category')): const SizedBox()
     );
   }
 }

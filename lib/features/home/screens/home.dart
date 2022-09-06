@@ -12,9 +12,9 @@ class Home extends StatelessWidget {
       backgroundColor: AppColors.blueColor,
       body: SafeArea(
         child: Column(
-          children: [
-            Summary(),
-            const Expenses()
+          children:  [
+            const Summary(),
+            Expenses()
           ],
         )
       ),

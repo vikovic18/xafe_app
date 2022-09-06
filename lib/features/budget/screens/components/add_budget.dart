@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
+import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/button.dart';
+import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
 import 'package:xafe/features/budget/controller/budget_controller.dart';
 import 'package:xafe/utils/colors.dart';
+import 'package:xafe/utils/snackbar.dart';
 
 class AddBudget extends ConsumerStatefulWidget {
   const AddBudget({Key? key}) : super(key: key);
@@ -17,22 +20,45 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
-  String dropdownvalue = 'Choose an interval';
+   bool _isLoading = false;
+  void _loading() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
+  String? dropdownvalue;
 
   var items = [
-    'Choose an interval',
     'Day',
     'Month',
     'Year',
   ];
 
-  void _addBudget(context) async {
+  void _addBudget() async {
     String name = nameController.text.trim();
     String amountText = amountController.text.trim();
     String amount = amountText.replaceAll(",", "");
+    _loading();
     await ref
         .read(budgetControllerProvider)
-        .addBudget(context, name, double.parse(amount), dropdownvalue);
+        .addBudget(name, double.parse(amount), dropdownvalue!)
+        .then((status) => {
+              if (status.isSuccess)
+                {showSnackBar(context: context, content: 'Added successfully')}
+            })
+        .catchError((error) {
+          showSnackBar(context: context, content: 'Your internet is slow. Give it time.');
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const CustomizedBottomNavigationBar()),
+                );
+        _loading();
+      
+    });
+    _loading();
   }
 
   @override
@@ -47,7 +73,7 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: !_isLoading ? Container(
           margin: const EdgeInsets.only(top: 20, left: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +119,12 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: AppColors.greyColor)),
                 child: DropdownButton(
+                    hint: const BodyText(
+                      color: AppColors.blackColor,
+                      size: 14,
+                      weight: FontWeight.w400,
+                      text: 'choose an interval',
+                    ),
                     style: const TextStyle(
                         fontFamily: 'Euclid',
                         fontSize: 14,
@@ -115,12 +147,11 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
               ),
             ],
           ),
-        ),
+        ): const Loader()
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(
-              onPressed: () => _addBudget(context), text: 'Create Budget')),
+          child: ButtonText(onPressed: _addBudget, text: 'Create Budget')),
     );
   }
 }

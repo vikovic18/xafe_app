@@ -41,7 +41,7 @@ class Budget extends ConsumerWidget {
                 SizedBox(height: size.height * 0.05),
                 StreamBuilder(
                     stream:
-                        ref.read(budgetControllerProvider).allBudget(context),
+                        ref.read(budgetControllerProvider).allBudget(),
                     builder: ((context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Loader();

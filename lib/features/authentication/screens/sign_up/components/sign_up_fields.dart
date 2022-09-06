@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
+import 'package:xafe/common_widgets/loader.dart';
 
 import 'package:xafe/features/authentication/controllers/auth_controller.dart';
+import 'package:xafe/features/authentication/controllers/auth_exception_firebase_handler.dart';
 import 'package:xafe/features/authentication/screens/sign_up/components/sign_up_body.dart';
+import 'package:xafe/features/splash/screens/splash_screen.dart';
+import 'package:xafe/utils/custom_error_alert.dart';
 
 import 'package:xafe/utils/snackbar.dart';
 
@@ -127,33 +132,65 @@ class SignupPassword extends ConsumerStatefulWidget {
 class _SignupPasswordState extends ConsumerState<SignupPassword> {
   final TextEditingController passwordController = TextEditingController();
 
+  bool _isLoading = false;
+  void _loading() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
     passwordController.dispose();
   }
 
-  void registerUser(BuildContext context){
+  void _registerUser() async {
     if (widget.name.isNotEmpty && widget.email.isNotEmpty) {
-      ref.read(authControllerProvider).signUpWithEmailAndPassword(
-          context, widget.name, widget.email, passwordController.text.trim());
-    } else {
+      _loading();
+      await ref
+          .read(authControllerProvider)
+          .signUpWithEmailAndPassword(
+              widget.name, widget.email, passwordController.text.trim())
+          .then((status) {
+        if (status == AuthResultStatus.successful) {
+          Navigator.pushNamedAndRemoveUntil(context,
+              CustomizedBottomNavigationBar.routeName, (route) => false);
+        } else {
+          final errorMsg =
+              AuthExceptionHandler.generateExceptionMessage(status);
+          showCustomErrorDialog(context, errorMsg).then((_) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const SplashScreen()),
+              );
+          });
+
+        }
+      })
+      .catchError((error) {
+        showCustomErrorDialog(
+            context, "Check your internet connection, and try again.");
+      });
+      _loading();
+    } 
+    else {
       showSnackBar(context: context, content: 'Input the required fields');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SignUpBody(
-        onPressed: () => registerUser(context),
-              //   Navigator.of(context).pushNamedAndRemoveUntil(
-              //       CustomizedBottomNavigationBar.routeName,
-              //       (Route<dynamic> route) => false)
-              // });
-        controller: passwordController,
-        isObscure: true,
-        keyboardType: TextInputType.name,
-        title: "Add a Password",
-        subtitle: "Enter password");
+    return !_isLoading
+        ? SignUpBody(
+            onPressed: _registerUser,
+            controller: passwordController,
+            isObscure: true,
+            keyboardType: TextInputType.name,
+            title: "Add a Password",
+            subtitle: "Enter password")
+        : const Loader();
   }
 }

@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/features/budget/repository/budget_repository.dart';
 import 'package:xafe/models/budget.dart';
 import 'package:xafe/models/budget_expenses.dart';
-import 'package:xafe/utils/snackbar.dart';
+import 'package:xafe/models/response_model.dart';
 
 final budgetControllerProvider = Provider((ref) {
   final budgetRepository = ref.watch(budgetRepositoryProvider);
@@ -27,68 +26,76 @@ class BudgetController {
 
   BudgetController({required this.budgetRepository});
 
-  Future<void> addBudget(
-      BuildContext context, String name, double amount, String interval) async {
-    budgetRepository.addBudget(amount, name, interval).then(((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Added successfully');
-      }
-    })).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
-  }
-
-  Stream<Iterable<BudgetModel>> allBudget(BuildContext context) {
+  Stream<Iterable<BudgetModel>> allBudget() {
     return budgetRepository.allBudget();
   }
 
-  Future<void> editBudget(
-      BuildContext context, documentId, name, amount, interval) async {
-    budgetRepository
-        .editBudget(documentId, name, amount, interval)
-        .then((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Edited successfully');
-      }
-    }).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
+  Future<ResponseModel> addBudget(
+      String name, double amount, String interval) async {
+    late ResponseModel responseModel;
+    try {
+      await budgetRepository.addBudget(amount, name, interval);
+      responseModel = ResponseModel(true, 'Added Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
   }
 
-  Future<void> deleteBudget(BuildContext context, documentId) async {
-    budgetRepository.deleteBudget(documentId: documentId).then((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Removed successfully');
-      }
-    }).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
+  Future<ResponseModel> editBudget(documentId, name, amount, interval) async {
+    late ResponseModel responseModel;
+    try {
+      await budgetRepository.editBudget(documentId, name, amount, interval);
+      responseModel = ResponseModel(true, 'Edited Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
   }
 
-  Future<void> addBudgetExpenses(BuildContext context, String name,
-      double amount, String category, String budget, DateTime dateTime) async {
-    budgetRepository
-        .addBudgetExpenses(amount, category, name, budget, dateTime)
-        .then(((status) {
-      if (status.isSuccess) {
-        showSnackBar(context: context, content: 'Added successfully');
-      }
-    })).catchError((error) {
-      showSnackBar(context: context, content: error.toString());
-    });
+  Future<ResponseModel> deleteBudget(documentId) async {
+    late ResponseModel responseModel;
+    try {
+      await budgetRepository.deleteBudget(documentId: documentId);
+      responseModel = ResponseModel(true, 'Deleted Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
   }
 
-  Stream<Iterable<BudgetExpensesModel>> allBudgetExpenses(
-      String budgetId) {
+  Future<ResponseModel> addBudgetExpenses(String name, double amount,
+      String category, String budget, DateTime dateTime, String categoryEmoji) async {
+    late ResponseModel responseModel;
+    try {
+      await budgetRepository.addBudgetExpenses(
+          amount, category, name, budget, dateTime, categoryEmoji);
+      responseModel = ResponseModel(true, 'Added Successfully');
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      rethrow;
+    }
+    return responseModel;
+  }
+
+  Stream<Iterable<BudgetExpensesModel>> allBudgetExpenses(String budgetId) {
     return budgetRepository.allBudgetExpenses(budgetId);
   }
 
-  // Stream<Iterable<BudgetExpensesModel>> getAllBudgetExpensesList(
-  //     String budgetId) {
-  //   return budgetRepository.getAllBudgetExpensesList(budgetId);
-  // }
-
   Stream<Iterable<BudgetExpensesModel>> allTotalBudgetExpenses() {
     return budgetRepository.allTotalBudgetExpenses();
+  }
+
+  Future<double> getBudgetExpensesAmount(String budgetId) async {
+    double sum = 0;
+    List<BudgetExpensesModel> allBudgetExpenses =
+        await budgetRepository.getBudgetExpenses(budgetId);
+    for (var element in allBudgetExpenses) {
+      sum += element.amount!;
+    }
+    return sum;
   }
 }
