@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/custom_divider.dart';
-import 'package:xafe/features/budget/screens/components/add_budget.dart';
-import 'package:xafe/features/categories/screens/components/add_categories.dart';
-import 'package:xafe/features/home/screens/components/add_expenses.dart';
-import 'package:xafe/features/home/screens/components/add_income.dart';
+import 'package:xafe/features/budget/screens/add_budget.dart';
+import 'package:xafe/features/categories/screens/add_categories.dart';
+import 'package:xafe/features/home/screens/add_expenses.dart';
+import 'package:xafe/features/home/screens/add_income.dart';
 
 import 'package:xafe/utils/colors.dart';
 

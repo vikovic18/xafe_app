@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/loader.dart';
 
 import 'package:xafe/features/authentication/controllers/auth_controller.dart';
 import 'package:xafe/features/authentication/controllers/auth_exception_firebase_handler.dart';
-import 'package:xafe/features/authentication/screens/sign_up/components/sign_up_body.dart';
+import 'package:xafe/features/authentication/screens/sign_up/sign_up_body.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
 import 'package:xafe/features/splash/screens/splash_screen.dart';
 import 'package:xafe/utils/custom_error_alert.dart';
 
@@ -68,8 +68,8 @@ class _SignUpEmailState extends State<SignUpEmail> {
   Widget build(BuildContext context) {
     return SignUpBody(
         onPressed: () {
-          Navigator.pushNamed(context, SignUpCode.routeName,
-              arguments: SignUpCode(
+          Navigator.pushNamed(context, SignupPassword.routeName,
+              arguments: SignupPassword(
                   name: widget.name, email: emailController.text.trim()));
         },
         controller: emailController,
@@ -81,40 +81,40 @@ class _SignUpEmailState extends State<SignUpEmail> {
 
 //SignUpCode
 
-class SignUpCode extends StatefulWidget {
-  static const routeName = '/signupcode-screen';
-  final String name;
-  final String email;
-  const SignUpCode({Key? key, required this.name, required this.email})
-      : super(key: key);
+// class SignUpCode extends StatefulWidget {
+//   static const routeName = '/signupcode-screen';
+//   final String name;
+//   final String email;
+//   const SignUpCode({Key? key, required this.name, required this.email})
+//       : super(key: key);
 
-  @override
-  _SignUpCodeState createState() => _SignUpCodeState();
-}
+//   @override
+//   _SignUpCodeState createState() => _SignUpCodeState();
+// }
 
-class _SignUpCodeState extends State<SignUpCode> {
-  final TextEditingController codeController = TextEditingController();
+// class _SignUpCodeState extends State<SignUpCode> {
+//   final TextEditingController codeController = TextEditingController();
 
-  @override
-  void dispose() {
-    super.dispose();
-    codeController.dispose();
-  }
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     codeController.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SignUpBody(
-        onPressed: () {
-          Navigator.pushNamed(context, SignupPassword.routeName,
-              arguments:
-                  SignupPassword(name: widget.name, email: widget.email));
-        },
-        controller: codeController,
-        keyboardType: TextInputType.number,
-        title: "Enter the code",
-        subtitle: "Enter the code sent to your email address");
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return SignUpBody(
+//         onPressed: () {
+//           Navigator.pushNamed(context, SignupPassword.routeName,
+//               arguments:
+//                   SignupPassword(name: widget.name, email: widget.email));
+//         },
+//         controller: codeController,
+//         keyboardType: TextInputType.number,
+//         title: "Enter the code",
+//         subtitle: "Enter the code sent to your email address");
+//   }
+// }
 
 //SignUpPassword
 

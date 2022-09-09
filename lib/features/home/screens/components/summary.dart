@@ -113,24 +113,24 @@ class Summary extends ConsumerWidget {
                                     SizedBox(width: size.height * 0.07),
                                     TextOptions(
                                         title: 'Income',
-                                        amount: finalIncome.toStringAsFixed(2))
+                                        amount: '\$${finalIncome.toStringAsFixed(0)}')
                                   ],
                                 );
                               },
                               error: (err, trace) {
                                 return ErrorScreen(error: err.toString());
                               },
-                              loading: () => const Loader());
+                              loading: () => const SizedBox());
                         },
                         error: (err, trace) {
                           return ErrorScreen(error: err.toString());
                         },
-                        loading: () => const Loader());
+                        loading: () => const SizedBox());
                   },
                   error: (err, trace) {
                     return ErrorScreen(error: err.toString());
                   },
-                  loading: () => const Loader()),
+                  loading: () => const SizedBox()),
               SizedBox(height: size.height * 0.02)
             ],
           )
@@ -139,6 +139,8 @@ class Summary extends ConsumerWidget {
     );
   }
 }
+
+//BoxContainer
 
 class BoxContainer extends StatelessWidget {
   const BoxContainer({Key? key, required this.height}) : super(key: key);
@@ -157,6 +159,8 @@ class BoxContainer extends StatelessWidget {
   }
 }
 
+//TextOptions
+
 class TextOptions extends StatelessWidget {
   const TextOptions({Key? key, required this.title, required this.amount})
       : super(key: key);
@@ -166,6 +170,7 @@ class TextOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       BodyText(
           color: AppColors.whiteColor,
@@ -173,11 +178,17 @@ class TextOptions extends StatelessWidget {
           text: title,
           weight: FontWeight.w600),
       const SizedBox(height: 2),
-      BodyText(
-          color: AppColors.whiteColor,
-          size: 24,
-          text: amount,
-          weight: FontWeight.w700)
+      SizedBox(
+        width: size.height*0.15,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: BodyText(
+              color: AppColors.whiteColor,
+              size: 24,
+              text: amount,
+              weight: FontWeight.w700),
+        ),
+      )
     ]);
   }
 }

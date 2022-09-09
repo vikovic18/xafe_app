@@ -86,7 +86,7 @@ class Expenses extends ConsumerWidget {
                                                 child: BodyText(
                                                     color: AppColors.blackColor,
                                                     size: 18,
-                                                    text: expenses.name!,
+                                                    text: expenses.name!.toString(),
                                                     weight: FontWeight.w500),
                                               ),
                                             )
@@ -94,11 +94,17 @@ class Expenses extends ConsumerWidget {
                                         ),
                                         Row(
                                           children: [
-                                            BodyText(
-                                                color: AppColors.blackColor,
-                                                size: 16,
-                                                text: '\$${expenses.amount}',
-                                                weight: FontWeight.w400),
+                                            SizedBox(
+                                              width: size.height * 0.16,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.horizontal,
+                                                child: BodyText(
+                                                    color: AppColors.blackColor,
+                                                    size: 16,
+                                                    text: '\$${expenses.amount}',
+                                                    weight: FontWeight.w400),
+                                              ),
+                                            ),
                                             const SizedBox(width: 5),
                                             InkWell(
                                               onTap: () {
