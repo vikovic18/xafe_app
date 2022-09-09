@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/button.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
 import 'package:xafe/features/authentication/controllers/auth_controller.dart';
 import 'package:xafe/features/authentication/controllers/auth_exception_firebase_handler.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
 import 'package:xafe/utils/colors.dart';
 import 'package:xafe/utils/custom_error_alert.dart';
 

@@ -179,7 +179,7 @@ class _AddBudgetExpensesState extends ConsumerState<AddBudgetExpenses> {
                               ReusableTextField(
                                 controller: amountController,
                                 hintText: 'expense amount',
-                                keyboardType: TextInputType.name,
+                                keyboardType: TextInputType.number,
                               ),
                               const SizedBox(height: 10),
                               ReusableTextField(

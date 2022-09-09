@@ -1,33 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/button.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/common_widgets/reusable_textfield.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
 import 'package:xafe/features/budget/controller/budget_controller.dart';
 import 'package:xafe/utils/colors.dart';
 import 'package:xafe/utils/snackbar.dart';
 
-class AddBudget extends ConsumerStatefulWidget {
-  const AddBudget({Key? key}) : super(key: key);
+class EditBudget extends ConsumerStatefulWidget {
+  const EditBudget(
+      {Key? key,
+      required this.id,
+      required this.name,
+      required this.amount,
+      required this.interval})
+      : super(key: key);
+
+  final String id;
+  final String name;
+  final double amount;
+  final String interval;
 
   @override
-  _AddBudgetState createState() => _AddBudgetState();
+  _EditBudgetState createState() => _EditBudgetState();
 }
 
-class _AddBudgetState extends ConsumerState<AddBudget> {
+class _EditBudgetState extends ConsumerState<EditBudget> {
   final TextEditingController amountController = TextEditingController();
+  final TextEditingController interval = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
-   bool _isLoading = false;
+  String dropdownvalue = '';
+
+  bool _isLoading = false;
   void _loading() {
     setState(() {
       _isLoading = !_isLoading;
     });
   }
-
-  String? dropdownvalue;
 
   var items = [
     'Day',
@@ -35,37 +47,45 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
     'Year',
   ];
 
-  void _addBudget() async {
-    String name = nameController.text.trim();
-    String amountText = amountController.text.trim();
-    String amount = amountText.replaceAll(",", "");
-    _loading();
-    await ref
-        .read(budgetControllerProvider)
-        .addBudget(name, double.parse(amount), dropdownvalue!)
-        .then((status) => {
-              if (status.isSuccess)
-                {showSnackBar(context: context, content: 'Added successfully')}
-            })
-        .catchError((error) {
-          showSnackBar(context: context, content: 'Your internet is slow. Give it time.');
-          Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const CustomizedBottomNavigationBar()),
-                );
-        _loading();
-      
-    });
-    _loading();
-  }
-
   @override
   void dispose() {
     super.dispose();
     amountController.dispose();
     nameController.dispose();
+    interval.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.name;
+    amountController.text = widget.amount.toStringAsFixed(0);
+  }
+
+  void _editBudget() async {
+    String name = nameController.text.trim();
+    String amount = amountController.text.trim();
+    String budgetInterval =
+        dropdownvalue == '' ? widget.interval : dropdownvalue;
+    _loading();
+    await ref
+        .read(budgetControllerProvider)
+        .editBudget(widget.id, name, double.parse(amount), budgetInterval)
+        .then((status) => {
+              if (status.isSuccess)
+                {
+                  _loading(),
+                  showSnackBar(
+                      context: context, content: 'Updated successfully')
+                }
+            })
+        .then((_) => Navigator.pushNamed(
+              context,
+              CustomizedBottomNavigationBar.routeName,
+            ))
+        .catchError((error) {
+      showSnackBar(context: context, content: error.toString());
+    });
   }
 
   @override
@@ -91,21 +111,20 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
               const BodyText(
                   color: AppColors.blackColor,
                   size: 24,
-                  text: 'Create a budget',
+                  text: 'Edit family budget',
                   weight: FontWeight.w400),
               SizedBox(
                 height: size.height * 0.04,
               ),
               ReusableTextField(
                 controller: nameController,
-                hintText: 'Budget name',
+                hintText: '',
                 keyboardType: TextInputType.name,
               ),
               const SizedBox(height: 10),
-              const SizedBox(height: 10),
               ReusableTextField(
                 controller: amountController,
-                hintText: 'Budget amount',
+                hintText: '',
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
@@ -119,17 +138,12 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: AppColors.greyColor)),
                 child: DropdownButton(
-                    hint: const BodyText(
-                      color: AppColors.blackColor,
-                      size: 14,
-                      weight: FontWeight.w400,
-                      text: 'choose an interval',
-                    ),
                     style: const TextStyle(
                         fontFamily: 'Euclid',
                         fontSize: 14,
                         color: AppColors.blackColor),
-                    value: dropdownvalue,
+                    value:
+                        dropdownvalue == '' ? widget.interval : dropdownvalue,
                     icon: const Icon(
                       Icons.keyboard_arrow_down,
                     ),
@@ -147,11 +161,13 @@ class _AddBudgetState extends ConsumerState<AddBudget> {
               ),
             ],
           ),
-        ): const Loader()
+        ) : const Loader()
       ),
       floatingActionButton: Container(
           margin: const EdgeInsets.only(left: 30),
-          child: ButtonText(onPressed: _addBudget, text: 'Create Budget')),
+          child:  ButtonText(
+                  onPressed: () => _editBudget(), text: 'Create Budget')
+              ),
     );
   }
 }

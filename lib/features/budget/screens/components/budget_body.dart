@@ -5,7 +5,7 @@ import 'package:xafe/common_widgets/chart_bar.dart';
 import 'package:xafe/common_widgets/error.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/features/budget/controller/budget_controller.dart';
-import 'package:xafe/features/budget/screens/components/budget_details.dart';
+import 'package:xafe/features/budget/screens/budget_details.dart';
 import 'package:xafe/models/budget.dart';
 import 'package:xafe/utils/colors.dart';
 

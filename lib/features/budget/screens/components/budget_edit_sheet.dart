@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/custom_divider.dart';
 import 'package:xafe/common_widgets/loader.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
 import 'package:xafe/features/budget/controller/budget_controller.dart';
-import 'package:xafe/features/budget/screens/components/add_budget_expenses.dart';
-import 'package:xafe/features/budget/screens/components/edit_budget.dart';
+import 'package:xafe/features/budget/screens/add_budget_expenses.dart';
+import 'package:xafe/features/budget/screens/edit_budget.dart';
 import 'package:xafe/utils/colors.dart';
 import 'package:xafe/utils/delete_error_alert.dart';
 import 'package:xafe/utils/snackbar.dart';

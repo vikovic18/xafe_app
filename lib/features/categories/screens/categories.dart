@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xafe/common_widgets/body_text.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/features/categories/controller/category_controller.dart';
-import 'package:xafe/features/categories/screens/components/add_categories.dart';
+import 'package:xafe/features/categories/screens/add_categories.dart';
 import 'package:xafe/features/categories/screens/components/categories_body.dart';
 import 'package:xafe/models/category.dart';
 

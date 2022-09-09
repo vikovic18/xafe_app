@@ -85,7 +85,7 @@ class BudgetExpenses extends ConsumerWidget {
                                               child: BodyText(
                                                   color: AppColors.blackColor,
                                                   size: 16,
-                                                  text: budgetExpense.name!,
+                                                  text: budgetExpense.name.toString(),
                                                   weight: FontWeight.w400),
                                             ),
                                             BodyText(

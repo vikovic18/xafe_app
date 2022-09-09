@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/error.dart';
 import 'package:xafe/common_widgets/loader.dart';
 import 'package:xafe/features/authentication/controllers/auth_controller.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
 import 'package:xafe/features/splash/screens/splash_screen.dart';
 import 'package:xafe/firebase_options.dart';
 import 'package:xafe/router.dart';
@@ -31,7 +31,6 @@ class MyApp extends ConsumerWidget {
         ),
         onGenerateRoute: (settings) => generateRoute(settings),
         home: 
-        // SignUpName()
         ref.watch(userDataAuthProvider).when(
             data: (user) {
               if (user == null) {

@@ -52,7 +52,7 @@ class _CustomizedBottomNavigationBarState extends State<CustomizedBottomNavigati
                     BottomNavigationBarItem(
                         icon: Icon(Icons.search), label: 'Categories'),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.shopping_cart), label: 'Budget'),
+                        icon: Icon(Icons.stop_circle_outlined), label: 'Budget'),
                   ]),
             ),
             // SizedBox(height: 12,),

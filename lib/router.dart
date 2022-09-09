@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:xafe/common_widgets/bottom_navigation_bar.dart';
 import 'package:xafe/common_widgets/error.dart';
 import 'package:xafe/features/authentication/screens/login/login.dart';
 import 'package:xafe/features/authentication/screens/sign_up/components/sign_up_fields.dart';
-import 'package:xafe/features/budget/screens/components/budget_details.dart';
+import 'package:xafe/features/bottom_navigation_bar.dart';
+import 'package:xafe/features/budget/screens/budget_details.dart';
+
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -14,10 +15,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case SignUpEmail.routeName:
       final name = settings.arguments as String;
       return MaterialPageRoute(builder: (context) => SignUpEmail(name: name));
-    case SignUpCode.routeName:
-      final args = settings.arguments as SignUpCode;
-      return MaterialPageRoute(
-          builder: (context) => SignUpCode(name: args.name, email: args.email));
+    // case SignUpCode.routeName:
+    //   final args = settings.arguments as SignUpCode;
+    //   return MaterialPageRoute(
+    //       builder: (context) => SignUpCode(name: args.name, email: args.email));
     case SignupPassword.routeName:
       final args = settings.arguments as SignupPassword;
       return MaterialPageRoute(
