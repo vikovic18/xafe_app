@@ -1,6 +1,6 @@
 # xafe
 
-A new Flutter project.
+A Budget Expenses application developed with Flutter.
 
 ## Getting Started
 
